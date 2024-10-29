@@ -1,7 +1,7 @@
 ## Vision Search Assistant: Empower Vision-Language Models as Multimodal Search Engines
 
 [🌐[Project Page](https://cnzzx.github.io/VSA/)]
-[📄[Paper](https://arxiv.org/abs/2312.03341)]
+[📄[Paper](https://arxiv.org/abs/2410.21220)]
 [🤗[Hugging Face Space](https://huggingface.co/spaces/Yiyuan/VSA)]
 [💻[Model Zoo](./docs/model_zoo.md)]
 
