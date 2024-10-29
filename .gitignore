@@ -1,0 +1,39 @@
+temp/
+scripts/start_app.sh
+scripts/start_cli.sh
+/.history
+/.gradio
+
+# Python
+__pycache__
+*.pyc
+*.egg-info
+dist
+
+# Log
+*.log
+*.log.*
+*.json
+*.jsonl
+
+# Data
+!**/alpaca-data-conversation.json
+
+# Editor
+.idea
+*.swp
+
+# Other
+.DS_Store
+wandb
+output
+
+checkpoints
+ckpts*
+
+.ipynb_checkpoints
+*.ipynb
+*.pt
+
+# DevContainer
+!.devcontainer/*
