@@ -4,6 +4,8 @@
 [📄[Paper](https://arxiv.org/abs/2410.21220)]
 [🤗[Hugging Face Space](https://huggingface.co/spaces/Yiyuan/VSA)]
 [💻[Model Zoo](./docs/model_zoo.md)]
+[📖[Introduction](https://zhuanlan.zhihu.com/p/4479795939)]
+[🎥[Video](https://www.bilibili.com/video/BV1c5DPYmE9s)]
 
 <img src="assets/teaser.png">
 
