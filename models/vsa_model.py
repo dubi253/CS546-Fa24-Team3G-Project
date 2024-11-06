@@ -195,7 +195,7 @@ class WebSearcher:
     def __init__(
         self,
         model_path: str = 'internlm/internlm2_5-7b-chat',
-        lang: str = 'cn',
+        lang: str = 'en',
         top_p: float = 0.8,
         top_k: int = 1,
         temperature: float = 0,
