@@ -4,4 +4,4 @@ git+https://github.com/InternLM/lagent.git@238aacf5e711f45cdbdfb26a6c2f4336fb64c
 lmdeploy==0.6.1
 termcolor==2.5.0
 transformers==4.41.0
-gradio==4.40.0
+gradio==5.1.0
