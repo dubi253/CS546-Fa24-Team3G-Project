@@ -17,15 +17,22 @@
 ## ⚙️ Setup
 
 1. Clone this repository and navigate to VSA folder.
+```shell
+git clone https://github.com/dubi253/CS546-Fa24-Team3G-Project
+cd CS546-Fa24-Team3G-Project
 ```
-git clone https://github.com/cnzzx/VSA.git
-cd VSA
+
+or use SSH:
+
+```shell
+git clone git@github.com:dubi253/CS546-Fa24-Team3G-Project.git
+cd CS546-Fa24-Team3G-Project
 ```
 
 2. Create conda environments.
 ```
-conda create -n vsa python=3.10
-conda activate vsa
+conda create -n CS546 python=3.10
+conda activate CS546
 ```
 
 3. Install LLaVA.
