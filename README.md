@@ -33,6 +33,7 @@ cd CS546-Fa24-Team3G-Project
 ```
 conda create -n CS546 python=3.10
 conda activate CS546
+pip install --upgrade pip  # enable PEP 660 support
 ```
 
 3. Install LLaVA.
@@ -43,8 +44,17 @@ pip install -e .
 
 4. Install other requirements.
 ```
+cd ../..  # back to project root directory
 pip install -r requirements.txt
 ```
+
+**Note from Zhan Jin:**
+
+Environment setup causing conflicts in my computer.
+
+Model `llava` is not installed properly.
+
+May due to my computer does not have nvidia GPU.
 
 
 ## ⭐ Local Demo
