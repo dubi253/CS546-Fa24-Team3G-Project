@@ -38,7 +38,7 @@ pip install --upgrade pip  # enable PEP 660 support
 
 3. Install LLaVA.
 ```
-cd models/LLaVA
+cd models/LLaVA-Med
 pip install -e .
 ```
 
