@@ -298,10 +298,10 @@ class VisionSearchAssistant:
         self.searcher = WebSearcher(
             model_path = search_model
         )
-        self.grounder = VisualGrounder(
-            model_path = ground_model,
-            device = ground_device,
-        )
+        # self.grounder = VisualGrounder(
+        #     model_path = ground_model,
+        #     device = ground_device,
+        # )
         self.vlm = VLM(
             model_path = vlm_model,
             device = vlm_device,
@@ -338,18 +338,18 @@ class VisionSearchAssistant:
             raise Exception('Unsupported input image format.')
 
         # Visual Grounding
-        bboxes, labels, out_image = self.grounder(in_image, classes = ground_classes)
-
+        # bboxes, labels, out_image = self.grounder(in_image, classes = ground_classes)
+        labels = []
         det_images = []
-        for bid, bbox in enumerate(bboxes):
-            crop_box = (int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3]))
-            det_image = in_image.crop(crop_box)
-            det_image.save('temp/debug_bbox_image_{}.jpg'.format(bid))
-            det_images.append(det_image)
+        # for bid, bbox in enumerate(bboxes):
+        #     crop_box = (int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3]))
+        #     det_image = in_image.crop(crop_box)
+        #     det_image.save('temp/debug_bbox_image_{}.jpg'.format(bid))
+        #     det_images.append(det_image)
         
-        if len(det_images) == 0:  # No object detected, use the full image.
-            det_images.append(in_image)
-            labels.append('image')
+        # if len(det_images) == 0:  # No object detected, use the full image.
+        det_images.append(in_image)
+        labels.append('image')
         
         # Visual Captioning
         captions = []
@@ -405,8 +405,7 @@ class VisionSearchAssistant:
     def app_run(
         self,
         image: Union[str, Image.Image, np.ndarray],
-        text: str,
-        ground_classes: List[str] = COCO_CLASSES
+        text: str
     ):
         # Create and clear the temporary directory.
         if not os.access('temp', os.F_OK):
@@ -428,19 +427,20 @@ class VisionSearchAssistant:
             raise Exception('Unsupported input image format.')
 
         # Visual Grounding
-        bboxes, labels, out_image = self.grounder(in_image, classes = ground_classes)
-        yield out_image, 'ground'
+        # bboxes, labels, out_image = self.grounder(in_image, classes = ground_classes)
+        # yield out_image, 'ground'
 
         det_images = []
-        for bid, bbox in enumerate(bboxes):
-            crop_box = (int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3]))
-            det_image = in_image.crop(crop_box)
-            det_image.save('temp/debug_bbox_image_{}.jpg'.format(bid))
-            det_images.append(det_image)
+        labels = []
+        # for bid, bbox in enumerate(bboxes):
+        #     crop_box = (int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3]))
+        #     det_image = in_image.crop(crop_box)
+        #     det_image.save('temp/debug_bbox_image_{}.jpg'.format(bid))
+        #     det_images.append(det_image)
         
-        if len(det_images) == 0:  # No object detected, use the full image.
-            det_images.append(in_image)
-            labels.append('image')
+        # if len(det_images) == 0:  # No object detected, use the full image.
+        det_images.append(in_image)
+        labels.append('image')
         
         # Visual Captioning
         captions = []
