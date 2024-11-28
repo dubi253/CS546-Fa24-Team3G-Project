@@ -63,58 +63,60 @@ def render_bboxes(in_image: Image.Image, bboxes: np.ndarray, labels: List[str]):
     return out_image
 
 
-# class VisualGrounder:
-#     def __init__(
-#         self,
-#         model_path: str = "IDEA-Research/grounding-dino-base",
-#         device: str = "cuda:1",
-#         box_threshold: float = 0.4,
-#         text_threshold: float = 0.3,
-#     ):
-#         self.processor = AutoProcessor.from_pretrained(model_path)
-#         self.model = AutoModelForZeroShotObjectDetection.from_pretrained(model_path).to(device)
-#         self.device = device
-#         self.default_classes = COCO_CLASSES
-#         self.box_threshold = box_threshold
-#         self.text_threshold = text_threshold
-#
-#     def __call__(
-#         self,
-#         in_image: Image.Image,
-#         classes: Union[List[str], None] = None,
-#     ):
-#         # Save image.
-#         in_image.save('temp/in_image.jpg')
-#
-#         # Preparation.
-#         if classes is None:
-#             classes = self.default_classes
-#
-#         text = ". ".join(classes)
-#         inputs = self.processor(images=in_image, text=text, return_tensors="pt").to(self.device)
-#
-#         # Grounding.
-#         with torch.no_grad():
-#             outputs = self.model(**inputs)
-#
-#         # Postprocess
-#         results = self.processor.post_process_grounded_object_detection(
-#             outputs,
-#             inputs.input_ids,
-#             box_threshold = self.box_threshold,
-#             text_threshold = self.text_threshold,
-#             target_sizes=[in_image.size[::-1]]
-#         )
-#         bboxes = results[0]['boxes'].cpu().numpy()
-#         labels = results[0]['labels']
-#
-#         print(results)
-#
-#         # Visualization.
-#         out_image = render_bboxes(in_image, bboxes, labels)
-#         out_image.save('temp/ground_bbox.jpg')
-#
-#         return bboxes, labels, out_image
+class VisualGrounder:
+    def __init__(
+        self,
+        model_path: str = "IDEA-Research/grounding-dino-base",
+        device: str = "cuda:1",
+        box_threshold: float = 0.4,
+        text_threshold: float = 0.3,
+    ):
+        self.processor = AutoProcessor.from_pretrained(model_path)
+        self.model = AutoModelForZeroShotObjectDetection.from_pretrained(model_path).to(device)
+        self.device = device
+        self.default_classes = COCO_CLASSES
+        self.box_threshold = box_threshold
+        self.text_threshold = text_threshold
+        
+        print('Visual Grounder initialized.')
+            
+    def __call__(
+        self,
+        in_image: Image.Image,
+        classes: Union[List[str], None] = None,
+    ):
+        # Save image.
+        in_image.save('temp/in_image.jpg')
+        
+        # Preparation.
+        if classes is None:
+            classes = self.default_classes
+        
+        text = ". ".join(classes)
+        inputs = self.processor(images=in_image, text=text, return_tensors="pt").to(self.device)
+
+        # Grounding.
+        with torch.no_grad():
+            outputs = self.model(**inputs)
+        
+        # Postprocess
+        results = self.processor.post_process_grounded_object_detection(
+            outputs,
+            inputs.input_ids,
+            box_threshold = self.box_threshold,
+            text_threshold = self.text_threshold,
+            target_sizes=[in_image.size[::-1]]
+        )
+        bboxes = results[0]['boxes'].cpu().numpy()
+        labels = results[0]['labels']
+
+        print(results)
+        
+        # Visualization.
+        out_image = render_bboxes(in_image, bboxes, labels)
+        out_image.save('temp/ground_bbox.jpg')
+        
+        return bboxes, labels, out_image
 
 
 class VLM:
@@ -149,6 +151,8 @@ class VLM:
         
         self.temperature = temperature
         self.max_new_tokens = max_new_tokens
+        
+        print('VLM initialized.')
 
     def __call__(
         self,
@@ -194,7 +198,7 @@ class VLM:
 class WebSearcher:
     def __init__(
         self,
-        model_path: str = 'internlm/internlm2_5-7b-chat',
+        model_path: str = 'InternLM/internlm2_5-7b-chat',
         lang: str = 'en',
         top_p: float = 0.8,
         top_k: int = 1,
@@ -213,6 +217,7 @@ class WebSearcher:
         llm = LMDeployServer(
             path = model_path,
             model_name = model_name,
+            server_name='127.0.0.1',
             meta_template = INTERNLM2_META,
             top_p = top_p,
             top_k = top_k,
@@ -243,6 +248,8 @@ class WebSearcher:
                 ),
             max_turn = max_turn
         )
+        
+        print('Web Searcher initialized.', flush=True)
     
     def __call__(
         self,
@@ -281,20 +288,20 @@ class VisionSearchAssistant:
     def __init__(
         self,
         search_model: str = "internlm/internlm2_5-7b-chat",
-        # ground_model: str = "IDEA-Research/grounding-dino-base",
-        # ground_device: str = "cuda:0",
-        vlm_model: str = "microsoft/llava-med-v1.5-mistral-7b",  # using LLaVA-Med
-        vlm_device: str = "cuda:0",
-        vlm_load_4bit: bool = True,
+        ground_model: str = "IDEA-Research/grounding-dino-base",
+        ground_device: str = "cuda",
+        vlm_model: str = "microsoft/llava-med-v1.5-mistral-7b",
+        vlm_device: str = "cuda",
+        vlm_load_4bit: bool = False,
         vlm_load_8bit: bool = False,
     ):
         self.searcher = WebSearcher(
             model_path = search_model
         )
-        # self.grounder = VisualGrounder(
-        #     model_path = ground_model,
-        #     device = ground_device,
-        # )
+        self.grounder = VisualGrounder(
+            model_path = ground_model,
+            device = ground_device,
+        )
         self.vlm = VLM(
             model_path = vlm_model,
             device = vlm_device,
@@ -302,6 +309,8 @@ class VisionSearchAssistant:
             load_8bit = vlm_load_8bit
         )
         self.use_correlate = True
+        
+        print('Vision Search Assistant initialized.', flush=True)
     
     def __call__(
         self,
@@ -419,49 +428,46 @@ class VisionSearchAssistant:
             raise Exception('Unsupported input image format.')
 
         # Visual Grounding
-        # bboxes, labels, out_image = self.grounder(in_image, classes = ground_classes)
-        # yield out_image, 'ground'
-        #
-        # det_images = []
-        # for bid, bbox in enumerate(bboxes):
-        #     crop_box = (int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3]))
-        #     det_image = in_image.crop(crop_box)
-        #     det_image.save('temp/debug_bbox_image_{}.jpg'.format(bid))
-        #     det_images.append(det_image)
-        #
-        # if len(det_images) == 0:  # No object detected, use the full image.
-        #     det_images.append(in_image)
-        #     labels.append('image')
-        det_images = [in_image]
-        labels = ['image']
+        bboxes, labels, out_image = self.grounder(in_image, classes = ground_classes)
+        yield out_image, 'ground'
 
+        det_images = []
+        for bid, bbox in enumerate(bboxes):
+            crop_box = (int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3]))
+            det_image = in_image.crop(crop_box)
+            det_image.save('temp/debug_bbox_image_{}.jpg'.format(bid))
+            det_images.append(det_image)
+        
+        if len(det_images) == 0:  # No object detected, use the full image.
+            det_images.append(in_image)
+            labels.append('image')
+        
         # Visual Captioning
         captions = []
         for det_image, label in zip(det_images, labels):
             inp = get_caption_prompt(label, text)
             caption = self.vlm(det_image, inp)
             captions.append(caption)
-
+        
         for cid, caption in enumerate(captions):
             with open('temp/caption_{}.txt'.format(cid), 'w', encoding='utf-8') as wf:
                 wf.write(caption)
         
         # Visual Correlation
-        # if len(captions) >= 2 and self.use_correlate:
-        #     queries = []
-        #     for mid, det_image in enumerate(det_images):
-        #         caption = captions[mid]
-        #         other_captions = []
-        #         for cid in range(len(captions)):
-        #             if cid == mid:
-        #                 continue
-        #             other_captions.append(captions[cid])
-        #         inp = get_correlate_prompt(caption, other_captions)
-        #         query = self.vlm(det_image, inp)
-        #         queries.append(query)
-        # else:
-        #     queries = captions
-        queries = captions
+        if len(captions) >= 2 and self.use_correlate:
+            queries = []
+            for mid, det_image in enumerate(det_images):
+                caption = captions[mid]
+                other_captions = []
+                for cid in range(len(captions)):
+                    if cid == mid:
+                        continue
+                    other_captions.append(captions[cid])
+                inp = get_correlate_prompt(caption, other_captions)
+                query = self.vlm(det_image, inp)
+                queries.append(query)
+        else:
+            queries = captions
         
         for qid, query in enumerate(queries):
             with open('temp/query_{}.txt'.format(qid), 'w', encoding='utf-8') as wf:
