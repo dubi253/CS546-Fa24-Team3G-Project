@@ -1,7 +1,14 @@
 import gradio as gr
-from models.vsa_model import VisionSearchAssistant
+# from models.vsa_model import VisionSearchAssistant
 from models.vsa_prompt import COCO_CLASSES
 
+# Create a mock VSA
+class VisionSearchAssistant:
+    def app_run(self, image, text):
+        # Simulate output
+        yield ["Mock Query 1", "Mock Query 2"], "query"
+        yield ["Mock Search Context 1", "Mock Search Context 2"], "search"
+        yield "Mock Answer", "answer"
 
 SAMPLES = {
     "images/iclr.jpg": ("What prize did this paper win in 2024?", ", ".join(COCO_CLASSES)),
@@ -22,14 +29,20 @@ def process_inputs(image, text):
             query_output = ''
             for qid, query in enumerate(output):
                 query_output += '[Area {}] '.format(qid) + query + '\n'
+            search_output = search_output or ''
+            answer_output = answer_output or ''
             yield query_output, search_output, answer_output
         elif output_type == 'search':
             search_output = ''
             for cid, context in enumerate(output):
                 search_output += '[Context {}] '.format(cid) + context + '\n'
+            query_output = query_output or ''
+            answer_output = answer_output or ''
             yield query_output, search_output, answer_output
         elif output_type == 'answer':
-            answer_output = output
+            answer_output = 'answer output: ' + output
+            query_output = query_output or ''
+            search_output = search_output or ''
             yield query_output, search_output, answer_output
 
 
@@ -91,5 +104,5 @@ if __name__ == '__main__':
     # Launch the app
     print('The app is launched.')
     
-    app.launch(server_port=9999)
+    app.launch(server_port=9999,share=True)
     print('The app is launched successfully.')
