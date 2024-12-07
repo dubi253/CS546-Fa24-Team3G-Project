@@ -1,14 +1,14 @@
 import gradio as gr
-# from models.vsa_model import VisionSearchAssistant
+from models.vsa_model import VisionSearchAssistant
 from models.vsa_prompt import COCO_CLASSES
 
 # Create a mock VSA
-class VisionSearchAssistant:
-    def app_run(self, image, text):
-        # Simulate output
-        yield ["Mock Query 1", "Mock Query 2"], "query"
-        yield ["Mock Search Context 1", "Mock Search Context 2"], "search"
-        yield "Mock Answer", "answer"
+# class VisionSearchAssistant:
+#     def app_run(self, image, text):
+#         # Simulate output
+#         yield ["Mock Query 1", "Mock Query 2"], "query"
+#         yield ["Mock Search Context 1", "Mock Search Context 2"], "search"
+#         yield "Mock Answer", "answer"
 
 SAMPLES = {
     "images/iclr.jpg": ("What prize did this paper win in 2024?", ", ".join(COCO_CLASSES)),

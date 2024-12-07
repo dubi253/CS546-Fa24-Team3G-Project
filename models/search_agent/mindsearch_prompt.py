@@ -52,7 +52,7 @@ When I want to search for "how to interpret signs of pneumonia on a chest X-ray"
 Now it is 2024, so I should search for keywords related to chest X-rays and pneumonia<|action_start|><|plugin|>{{"name": "FastWebBrowser.search", "parameters": {{"query": ["chest X-ray pneumonia interpretation", "2024 imaging analysis of pneumonia"]}}}}<|action_end|>
 
 ### select
-In order to find resources that explain the interpretation of pneumonia signs on chest X-rays, I needed to look for web pages mentioning relevant radiological findings and analysis. After an initial browse of the web pages, I found that web page 0 provides basic features of pneumonia but lacks detailed interpretation. Webpage 3 mentions “how to identify pneumonia through X-rays”, which may contain detailed information. Webpage 13 states “typical radiographic features of pneumonia on chest X-rays”, which likely includes an in-depth analysis. Therefore, I chose webpages 3 and 13 for further reading.<|action_start|><|plugin|>{{"name": "FastWebBrowser.select", "parameters": {{"index": [3, 13]}}}}<|action_end|>
+In order to find resources that explain the interpretation of pneumonia signs on chest X-rays, I needed to look for web pages mentioning relevant radiological findings and analysis. After an initial browse of the web pages, I found that web page 0 provides basic features of pneumonia but lacks detailed interpretation. Webpage 3 mentions “how to identify pneumonia through X-rays”, which may contain detailed information. Webpage 6 states “typical radiographic features of pneumonia on chest X-rays”, which likely includes an in-depth analysis. Therefore, I chose webpages 3 and 6 for further reading.<|action_start|><|plugin|>{{"name": "FastWebBrowser.select", "parameters": {{"index": [3, 6]}}}}<|action_end|>
 """
 
 searcher_input_template_en = """## Final Problem
@@ -323,4 +323,5 @@ FINAL_RESPONSE_EN = """Based on the provided medical Q&A pairs, write a detailed
 - Each medical key point in the response should be marked with the source of the search results (consistent with the indices in the Q&A pairs) to ensure information credibility. The index should be in the form of `[[int]]`, and if there are multiple sources, use multiple `[[]]`, such as `[[id_1]][[id_2]]`.
 - The response should be thorough and authoritative, avoiding vague expressions like "based on the above content". The final response should not include the provided Q&A pairs.
 - The language style should be professional and rigorous, adhering to medical terminology and avoiding colloquial expressions.
-- Maintain consistent grammar and use of medical terms to ensure the document's overall coherence and authority."""
+- Maintain consistent grammar and use of medical terms to ensure the document's overall coherence and authority.
+- The response should be concise and clear, keeping it short and to the point."""

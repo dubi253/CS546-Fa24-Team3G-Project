@@ -24,7 +24,7 @@ COCO_CLASSES =[
 
 CAPTION_FORMAT = """
 Please describe the {label} in detail in order to answer the user's question: \"{text}\". 
-Please only output your descriptions and avoid directly answering the question in your descriptions.
+Please only output detailed description of every organ and part of the image provided without other additional comments on the image and question.
 """
 
 CORRELATE_FORMAT = """
@@ -49,7 +49,7 @@ def get_correlate_prompt(caption, other_captions):
     prompt = prompt.replace('{other_captions}', ' '.join(other_captions))
     return prompt
 
-
+import logging
 def get_qa_prompt(text, contexts):
     prompt = QA_FORMAT.replace('{text}', text)
     prompt = prompt.replace('{contexts}', ' '.join(contexts))

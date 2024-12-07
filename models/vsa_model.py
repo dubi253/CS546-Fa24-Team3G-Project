@@ -159,6 +159,7 @@ class VLM:
         image: Image.Image,
         text: str,
     ):
+        print('VLM called.')
         image_size = image.size
         image_tensor = process_images([image], self.image_processor, self.model.config)
         if type(image_tensor) is list:
@@ -179,6 +180,7 @@ class VLM:
         conv.append_message(conv.roles[1], None)
         prompt = conv.get_prompt()
         input_ids = tokenizer_image_token(prompt, self.tokenizer, IMAGE_TOKEN_INDEX, return_tensors='pt').unsqueeze(0).to(self.device)
+        print('Prompt input', prompt)
         with torch.inference_mode():
             output_ids = self.model.generate(
                 input_ids,
@@ -189,9 +191,10 @@ class VLM:
                 max_new_tokens = self.max_new_tokens,
                 streamer = None,
                 use_cache = True)
+        print("VLM output success")
         outputs = self.tokenizer.decode(output_ids[0]).strip()
         outputs = outputs.replace('<s>', '').replace('</s>', '').replace('"', "'")
-
+        print('VLM output:', outputs)
         return outputs
 
 
@@ -236,7 +239,7 @@ class WebSearcher:
             searcher_cfg=dict(
                 llm = llm,
                 plugin_executor = ActionExecutor(
-                    BingBrowser(searcher_type='DuckDuckGoSearch', topk=6)
+                    BingBrowser(searcher_type='GoogleSearch', topk=6, api_key='2b12768ba23676094073b00cdfa508947b44f1dc'),
                 ),
                 protocol = MindSearchProtocol(
                     meta_prompt=datetime.now().strftime('The current date is %Y-%m-%d.'),
@@ -308,7 +311,7 @@ class VisionSearchAssistant:
             load_4bit = vlm_load_4bit,
             load_8bit = vlm_load_8bit
         )
-        self.use_correlate = True
+        self.use_correlate = False
         
         print('Vision Search Assistant initialized.', flush=True)
     
@@ -487,7 +490,9 @@ class VisionSearchAssistant:
             contexts[cid] = (queries[cid] + context)[:max_length_per_context]
         
         inp = get_qa_prompt(text, contexts)
+        print("final prompt:", inp)
         answer = self.vlm(in_image, inp)
+        print("final answer:", answer)
 
         with open('temp/answer.txt', 'w', encoding='utf-8') as wf:
             wf.write(answer)
