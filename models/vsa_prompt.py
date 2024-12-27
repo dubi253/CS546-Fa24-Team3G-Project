@@ -33,8 +33,8 @@ Please refer to the descriptions of other objects in the same scene: {other_capt
 """
 
 QA_FORMAT = """
-Please answer the user\'s question: \"{text}\" according to the given image in English. \
-The following information might be related to the image and please selectively refer to them: {contexts}
+If you are the medical professional, please answer the user\'s question: \"{text}\" according to the given image in English truthfully. \
+The following information might be related to the image and please selectively refer to them: \"{contexts}\"
 """
 
 

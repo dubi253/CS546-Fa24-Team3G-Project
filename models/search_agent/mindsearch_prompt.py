@@ -320,8 +320,8 @@ FINAL_RESPONSE_CN = """基于提供的医学问答对，撰写一篇详细完备
 
 FINAL_RESPONSE_EN = """Based on the provided medical Q&A pairs, write a detailed and comprehensive final response.
 - The response content should be logically clear and well-structured to ensure understanding by medical professionals and specialized readers.
-- Each medical key point in the response should be marked with the source of the search results (consistent with the indices in the Q&A pairs) to ensure information credibility. The index should be in the form of `[[int]]`, and if there are multiple sources, use multiple `[[]]`, such as `[[id_1]][[id_2]]`.
 - The response should be thorough and authoritative, avoiding vague expressions like "based on the above content". The final response should not include the provided Q&A pairs.
 - The language style should be professional and rigorous, adhering to medical terminology and avoiding colloquial expressions.
 - Maintain consistent grammar and use of medical terms to ensure the document's overall coherence and authority.
-- The response should be concise and clear, keeping it short and to the point."""
+- The response should be concise and clear, keeping it at a single paragraph.
+- The response should be supportive, however, it should not set the final conclusion, diagnosis, or treatment plan."""

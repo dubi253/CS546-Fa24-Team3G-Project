@@ -192,7 +192,8 @@ class VLM:
                 streamer = None,
                 use_cache = True)
         print("VLM output success")
-        outputs = self.tokenizer.decode(output_ids[0]).strip()
+        outputs = [self.tokenizer.decode(ids).strip() for ids in output_ids]
+        outputs = "\n".join(outputs)
         outputs = outputs.replace('<s>', '').replace('</s>', '').replace('"', "'")
         print('VLM output:', outputs)
         return outputs
